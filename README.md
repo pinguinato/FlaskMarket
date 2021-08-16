@@ -123,3 +123,64 @@ ecc... ecc...
 
         <a class="nav-link" href="{{ url_for('home_page') }}">Home <span class="sr-only">(current)</span></a>
 
+## 11 Collegamento a SQLlite
+
+Bisogna installare dei tools per Flask
+
+    pip install flask-sqlalchemy
+
+poi nel file python dell'applicazione:
+
+    from flask_sqlalchemy import SQLAlchemy
+
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///market.db'
+    db = SQLAlchemy(app)
+
+poi è necessario definire una classe MODELLO di dati:
+
+    class Item(db.Model):
+    id = db.Column(db.Integer(), primary_key=True)
+    name = db.Column(db.String(length=30), nullable=False, unique=True)
+    price = db.Column(db.Integer(), nullable=False)
+    barcode = db.Column(db.String(length=12), nullable=False, unique=True)
+    description = db.Column(db.String(length=1024), nullable=False, unique=True)
+
+    def __repr__(self):
+        return f'Item {self.name}'
+
+Alcuni esempi di come si interagisce con un DB sqlite e Python direttamente dalla console:
+
+- creazione del database da zero:
+
+      db.create.all()
+
+- inserimento di un item nel db:
+
+      from market import Item
+      
+      item1 = Item(name="IPhone 10", price=500, barcode='987654321234', description="telefono cellulare Iphone 10")
+      db.session.add()
+      db.session.commit()
+
+- visualizzazione contenuto del db:
+
+      Item.query.all()
+
+**Importante**
+
+      def __repr__(self):
+        return f'Item {self.name}'
+
+Serve per vedere il contenuto dei records nel DB:
+
+      >>> Item.query.all()
+      [Item IPhone 10, Item MSI GF63 Thin]
+
+**Importante**
+
+Passiamo i dati del DB alla pagina del market:
+
+    @app.route('/market')
+    def market_page():
+      items = Item.query.all()
+      return render_template('market.html', items=items)
