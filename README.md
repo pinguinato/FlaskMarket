@@ -166,6 +166,14 @@ Alcuni esempi di come si interagisce con un DB sqlite e Python direttamente dall
 
       Item.query.all()
 
+- drop di tutte le tabelle
+
+      db.drop_all()
+
+- ricreazione
+
+      db.create_all()
+
 **Importante**
 
       def __repr__(self):
@@ -184,3 +192,5 @@ Passiamo i dati del DB alla pagina del market:
     def market_page():
       items = Item.query.all()
       return render_template('market.html', items=items)
+
+
