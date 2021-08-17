@@ -269,5 +269,55 @@ Esempio (register.html):
 
 Altrimenti non posso usare la validazione per il campo email della form!!
 
+**Importante**
 
+Per evitare il crosso site forgery attack inserire nel codice del nostro flask form subito sotto il tag form:
+
+    <form method="POST" class="form-register" style="color:white;">
+      {{ form.hidden_tag() }}
+    ...
+
+**Importante**
+
+Per evitare l'errore http 405 (method not allowed) e permettere ad un form di inviare dati in POST definire la rotta come segue:
+
+    @app.route('/register', methods=['GET', 'POST'])
+
+**Validazione**
+
+Nel codice della rotta (validazione on submit e controllo errori):
+
+    if form.validate_on_submit():
+        user_to_create = User(username=form.username.data, email_address=form.email_address.data, password_hash=form.password1.data)
+        db.session.add(user_to_create)
+        db.session.commit()
+        return redirect(url_for('market_page'))
+    if form.errors != {}: #Se non ci sono errori
+        for err_msg in form.errors.values():
+            print(f'There was an error with creating a user: {err_msg}')
+
+Modifiche per consentire la validazione alla classe RegisterForm:
+
+    from wtforms.validators import Length
+    from wtforms.validators import EqualTo
+    from wtforms.validators import Email
+    from wtforms.validators import DataRequired
+
+
+    class RegisterForm(FlaskForm):
+      username = StringField(label='User name:', validators=[Length(min=2, max=30), DataRequired()])
+      email_address = StringField(label='Email address:', validators=[Email(), DataRequired()])
+      password1 = PasswordField(label='Password:', validators=[Length(min=6), DataRequired()])
+      password2 = PasswordField(label='Confirm Password:', validators=[EqualTo('password1'), DataRequired()])
+      submit = SubmitField(label='Create Account')
+
+Vengono inserite le direttive per la validazione in formato lista per poter consentire più tipoligie di validazioni possibili!
+
+**Importante**
+
+Dopo aver registrato a db l'utente nuovo è importante usare la redirezione:
+
+Esempio:
+
+    return redirect(url_for('market_page'))
 
