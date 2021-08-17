@@ -456,3 +456,34 @@ Nuova rotta per i login(routes.py):
 
 Nuovo file per il template di login -> vedi **login.html**
 
+## 19 Come ti implemento la funzionalità di logout con Flask
+
+Dentro init:
+
+    login_manager.login_view = "login_page"
+    login_manager.login_message_category = "info"
+
+Questo serve per ridirezionare alla pagina di login di default
+
+Definizione di una nuova rotta per il logout(routes.py):
+
+    from flask_login import login_user, logout_user, login_required
+
+**Inibire l'accesso alle pagine protette da login**
+  
+Si usa il decoratore **login_required**, Flask di default implementa un messaggio di non autorizzato 401.
+
+    @app.route('/market')
+    @login_required
+    def market_page():
+      ...
+
+Esempio di rotta per il logout:
+
+    @app.route('/logout')
+    def logout_page():
+      logout_user()
+      flash("You have been logged out!", category='info')
+      return redirect(url_for("home_page"))
+
+## 20 
