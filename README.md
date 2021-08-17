@@ -263,3 +263,11 @@ Esempio (register.html):
 
 ## 14 Flask Validazione dei forms
 
+**Importante**
+
+    pip install email_validator
+
+Altrimenti non posso usare la validazione per il campo email della form!!
+
+
+
