@@ -400,3 +400,9 @@ Dentro il file delle rotte:
 
     user_to_create = User(username=form.username.data, email_address=form.email_address.data, password=form.password1.data)
 
+## 18 Implementazione del LOGIN
+
+**Importante**
+
+    pip install flask_login
+
