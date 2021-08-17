@@ -193,4 +193,73 @@ Passiamo i dati del DB alla pagina del market:
       items = Item.query.all()
       return render_template('market.html', items=items)
 
+## 12 Flask Forms
+
+    pip install wtforms
+
+    pip install flask-wtf
+
+Realizzare una form di registrazione (forms.py):
+
+    from flask_wtf import FlaskForm
+    from wtforms import StringField
+    from wtforms import PasswordField
+    from wtforms import SubmitField
+
+
+    class RegisterForm(FlaskForm):
+      username = StringField(label='username')
+      email_address = StringField(label='email')
+      password1 = PasswordField(label='password1')
+      password2 = PasswordField(label='password2')
+      submit = SubmitField(label='submit')
+
+template html (register.html):
+
+    {% extends 'base.html' %}
+    {% block title %}
+      Register Page
+    {% endblock %}
+    {% block content %}
+      <h1>Register Form</h1>
+    {% endblock %}
+
+Ricordarsi di definire un secret key all'interno di __init__.py altrimenti non si possono usare le features del pacchetto dei forms:
+
+    app.config['SECRET_KEY'] = 'a1a9db1281afaf34d50225e9'
+
+è possibile definirla aprendo un temrinale python in questo modo:
+
+    import os
+    os.random(12).hex()
+
+## 13 Importare la form dentro il template file
+
+Esempio (register.html):
+
+    {% block content %}
+      <body class="text-center">
+        <div class="container">
+        <form method="POST" class="form-register" style="color:white;">
+            <img class="mb-4" src="https://res.cloudinary.com/jimshapedcoding/image/upload/v1597332609/android-icon-192x192_ove2a7.png" alt="">
+            <h1 class="h3 mb-3 font-weight-normal">
+                Please Create your Account
+            </h1>
+            <br>
+            {{ form.username.label() }}
+            {{ form.username(class="form-control", placeholder="User name") }}
+            {{ form.email_address.label() }}
+            {{ form.email_address(class="form-control", placeholder="Email Address") }}
+            {{ form.password1.label() }}
+            {{ form.password1(class="form-control", placeholder="Password") }}
+            {{ form.password2.label() }}
+            {{ form.password2(class="form-control", placeholder="Confirm Password") }}
+            <br>
+            {{ form.submit(class="btn btn-lg btn-block btn-primary") }}
+        </form>
+      </div>
+    </body>
+    {% endblock %}
+
+## 14 Flask Validazione dei forms
 
