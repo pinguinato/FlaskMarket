@@ -406,3 +406,53 @@ Dentro il file delle rotte:
 
     pip install flask_login
 
+Dentro il file init:
+
+    from flask_login import LoginManager
+
+    login_manager = LoginManager(app)
+
+Nuova form di login(forms.py):
+
+    class LoginForm(FlaskForm):
+      username = StringField(label='User Name:', validators=[DataRequired()])
+      password = PasswordField(label='Password:', validators=[DataRequired()])
+      submit = SubmitField(label='Sign In')
+
+Arricchimento del modello per il login(models.py):
+
+    from market import login_manager
+    from flask_login import UserMixin
+
+    @login_manager.user_loader
+    def load_user(user_id):
+      return User.query.get(int(user_id))
+
+    class User(db.Model, UserMixin): ecc...
+
+    def check_password_correction(self, attempted_password):
+        return bcrypt.check_password_hash(self.password_hash, attempted_password)
+
+Nuova rotta per i login(routes.py):
+
+    from market.forms import LoginForm
+    from flask_login import login_user
+
+    @app.route('/login', methods=['GET', 'POST'])
+    def login_page():
+      form = LoginForm()
+      if form.validate_on_submit():
+        attempted_user = User.query.filter_by(username=form.username.data).first()
+        if attempted_user and attempted_user.check_password_correction(
+                attempted_password=form.password.data
+        ):
+            login_user(attempted_user)
+            flash(f'Success! You are logged in as: {attempted_user.username}', category='success')
+            return redirect(url_for('market_page'))
+        else:
+            flash('Username and password are not match! Please try again', category='danger')
+
+      return render_template('login.html', form=form)
+
+Nuovo file per il template di login -> vedi **login.html**
+
