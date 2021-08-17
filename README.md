@@ -371,3 +371,32 @@ Dentro il file form.py:
 
 Le funzioni si chiamano validate_ per il fatto che ci pensa poi Flask a reindirizzare la visualizzazione
  corretta dell'errore in pagina web!
+
+## 17 Autenticazione Utente
+
+**Importante**
+
+Registrare a db le password in modo sicuro: possiamo usare un nuovo modulo di Python per fare questo.
+
+    pip install flask_bcrypt
+
+Dentro la classe User:
+
+    @property
+    def password(self):
+        return self.password
+
+    @password.setter
+    def password(self, plain_text_password):
+        self.password_hash = bcrypt.generate_password_hash(plain_text_password).decode('utf-8')
+
+Dentro il file init:
+
+    from flask_bcrypt import Bcrypt
+
+    bcrypt = Bcrypt(app)
+
+Dentro il file delle rotte:
+
+    user_to_create = User(username=form.username.data, email_address=form.email_address.data, password=form.password1.data)
+
