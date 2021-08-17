@@ -321,3 +321,32 @@ Esempio:
 
     return redirect(url_for('market_page'))
 
+## 15 Visualizzare i messaggi di validazione del form sul browser
+
+**Importante**
+
+Dentro il file delle rotte:
+
+    from flask import flash
+
+Aggiungere questo codice nel metodo register_page():
+
+    print(f'There was an error with creating a user: {err_msg}') # scrive errore sul terminale
+    flash(f'There was an error with creating a user: {err_msg}', category='danger') # scrive errore su pagina web
+
+Far arrivare i messaggi di errore con Jinja2 nel base.html:
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+            <div class="alert alert-{{ category }}">
+                <button type="button" class="m1-2 mb-1 close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                {{ message }}
+            </div>
+        {% endfor %}
+      {% endif %}
+     {% endwith %}
+
+## 16 Validare la creazione di un utente che è già presente nel database (errore violazione di constraint)
